@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RaspberryPiGPIODevTools:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RaspberryPiGPIODevTools_jar</output-path>
+    <root id="archive" name="RaspberryPiGPIODevTools.jar">
+      <element id="module-output" name="RaspberryPiGPIODevTools" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/pi4j/pi4j-core/1.2-SNAPSHOT/pi4j-core-1.2-SNAPSHOT.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
