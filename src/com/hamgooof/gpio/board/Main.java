@@ -1,9 +1,9 @@
-package com.hamgooof.raspberrypi;
+package com.hamgooof.gpio.board;
 
+import com.hamgooof.gpio.board.pins.PinHelper;
+import com.hamgooof.gpio.board.server.ServerManager;
 import com.hamgooof.helpers.Logger;
 import com.hamgooof.helpers.NumberHelper;
-import com.hamgooof.raspberrypi.pins.PinHelper;
-import com.hamgooof.raspberrypi.server.ServerManager;
 import com.pi4j.io.gpio.PinState;
 
 import java.io.BufferedReader;

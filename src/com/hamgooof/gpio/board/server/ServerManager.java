@@ -1,7 +1,7 @@
-package com.hamgooof.raspberrypi.server;
+package com.hamgooof.gpio.board.server;
 
 import com.hamgooof.helpers.Logger;
-import com.hamgooof.raspberrypi.Main;
+import com.hamgooof.gpio.board.Main;
 
 import java.io.*;
 import java.net.ServerSocket;

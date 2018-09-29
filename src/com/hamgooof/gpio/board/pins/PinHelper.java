@@ -1,4 +1,4 @@
-package com.hamgooof.raspberrypi.pins;
+package com.hamgooof.gpio.board.pins;
 
 import com.hamgooof.helpers.Logger;
 import com.pi4j.io.gpio.*;
