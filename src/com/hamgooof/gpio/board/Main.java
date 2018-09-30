@@ -4,13 +4,19 @@ import com.hamgooof.gpio.board.pins.PinHelper;
 import com.hamgooof.gpio.board.server.ServerManager;
 import com.hamgooof.helpers.Logger;
 import com.hamgooof.helpers.NumberHelper;
-import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.exception.UnsupportedBoardType;
+import com.pi4j.platform.Platform;
+import com.pi4j.platform.PlatformManager;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+    private static Platform platform;
+    private static String platformName;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // write your code here
@@ -18,6 +24,8 @@ public class Main {
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
         String distro = in.readLine();
+        platformName = distro;
+        platform = getPlatform(platformName);
         int port = 8070;
         Logger.getLogger().blankln(5);
 
@@ -29,6 +37,10 @@ public class Main {
 
         ServerManager serverManager = new ServerManager(new Main(distro), port);
         serverManager.run();
+    }
+
+    private static Platform getPlatform(String platformName) {
+        return Platform.fromId(platformName);
     }
 
     private final String Distro;
@@ -44,8 +56,20 @@ public class Main {
                     return;
                 SetPin(inputs);
                 return;
+            case "getall":
+                GetPin();
+                return;
             default:
                 Logger.getLogger().writeln("Unexpected command: " + inputs[0]);
+        }
+    }
+
+    private void GetPin() {
+
+        Pin[] pins = GetAllBoardPins();
+        Logger.getLogger().writeln(String.format("All pins: %s", pins.length));
+        for (Pin pin : pins) {
+            Logger.getLogger().writeln(String.format("Pin %s %s %s", pin.getAddress(), pin.getName(), pin.getProvider()));
         }
     }
 
@@ -80,6 +104,31 @@ public class Main {
             default:
                 Logger.getLogger().writeln("Unknown SetPin option " + inputs[2]);
                 break;
+        }
+    }
+
+    private Pin[] GetAllBoardPins() {
+        switch (platform) {
+
+            case RASPBERRYPI:
+                return RaspiPin.allPins();
+            case BANANAPI:
+                return BananaPiPin.allPins();
+            case BANANAPRO:
+                return BananaProPin.allPins();
+            case BPI:
+                return BpiPin.allPins();
+            case ODROID:
+                throw new NotImplementedException();
+            case ORANGEPI:
+                return OrangePiPin.allPins();
+            case NANOPI:
+                return NanoPiPin.allPins();
+            case SIMULATED:
+                throw new NotImplementedException();
+            default:
+                throw new UnsupportedBoardType();
+
         }
     }
 
