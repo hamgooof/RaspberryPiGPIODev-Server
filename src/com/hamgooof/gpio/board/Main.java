@@ -3,50 +3,29 @@ package com.hamgooof.gpio.board;
 import com.hamgooof.gpio.board.pins.PinHelper;
 import com.hamgooof.gpio.board.server.ServerManager;
 import com.hamgooof.helpers.Logger;
-import com.hamgooof.helpers.NumberHelper;
+import com.hamgooof.helpers.PrimitiveHelper;
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.exception.UnsupportedBoardType;
 import com.pi4j.platform.Platform;
-import com.pi4j.platform.PlatformManager;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Main {
     private static Platform platform;
     private static String platformName;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        // write your code here
-        Process p = Runtime.getRuntime().exec("uname -n");
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(p.getInputStream()));
-        String distro = in.readLine();
-        platformName = distro;
-        platform = getPlatform(platformName);
+    public static void main(String[] args) throws Exception {
+
+        //Initialize classes
+        BoardHelper.Initialize();
         int port = 8070;
         Logger.getLogger().blankln(5);
 
         Logger.getLogger().writeln("####################################");
         Logger.getLogger().writeln("# Starting RaspberryPiGPIODevTools #");
-        Logger.getLogger().writeln(String.format("%-35s", "# Board: " + distro) + "#");
+        Logger.getLogger().writeln(String.format("%-35s", "# Board: " + BoardHelper.getPlatformName()) + "#");
         Logger.getLogger().writeln("####################################");
         Logger.getLogger().blankln();
 
-        ServerManager serverManager = new ServerManager(new Main(distro), port);
+        ServerManager serverManager = new ServerManager(new Main(), port);
         serverManager.run();
-    }
-
-    private static Platform getPlatform(String platformName) {
-        return Platform.fromId(platformName);
-    }
-
-    private final String Distro;
-
-    public Main(String distro) {
-        Distro = distro;
     }
 
     public void parseCommand(String[] inputs) {
@@ -65,8 +44,7 @@ public class Main {
     }
 
     private void GetPin() {
-
-        Pin[] pins = GetAllBoardPins();
+        Pin[] pins = BoardHelper.GetAllBoardPins();
         Logger.getLogger().writeln(String.format("All pins: %s", pins.length));
         for (Pin pin : pins) {
             Logger.getLogger().writeln(String.format("Pin %s %s %s", pin.getAddress(), pin.getName(), pin.getProvider()));
@@ -74,7 +52,7 @@ public class Main {
     }
 
     private void SetPin(String[] inputs) {
-        if (!NumberHelper.isInt(inputs[1])) {
+        if (!PrimitiveHelper.isInt(inputs[1])) {
             Logger.getLogger().writeln(String.format("Pin number is not an integer: " + inputs[1]));
             return;
         }
@@ -107,30 +85,6 @@ public class Main {
         }
     }
 
-    private Pin[] GetAllBoardPins() {
-        switch (platform) {
-
-            case RASPBERRYPI:
-                return RaspiPin.allPins();
-            case BANANAPI:
-                return BananaPiPin.allPins();
-            case BANANAPRO:
-                return BananaProPin.allPins();
-            case BPI:
-                return BpiPin.allPins();
-            case ODROID:
-                throw new NotImplementedException();
-            case ORANGEPI:
-                return OrangePiPin.allPins();
-            case NANOPI:
-                return NanoPiPin.allPins();
-            case SIMULATED:
-                throw new NotImplementedException();
-            default:
-                throw new UnsupportedBoardType();
-
-        }
-    }
 
     private boolean checkInputLength(String[] inputs, int argsLen) {
         if (inputs.length < argsLen) {
