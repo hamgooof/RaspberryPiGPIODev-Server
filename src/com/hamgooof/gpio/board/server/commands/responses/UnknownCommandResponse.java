@@ -18,4 +18,9 @@ public class UnknownCommandResponse extends CommandResponse {
     public boolean sendToAllClients() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return format("Unknown command %s", nonexistingCommand);
+    }
 }

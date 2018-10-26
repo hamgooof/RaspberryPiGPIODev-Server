@@ -22,4 +22,9 @@ public class InvalidCommandArgumentsResponse extends CommandResponse {
 	public boolean sendToAllClients() {
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return 	format("Unknown Command %s", nonexistingCommand);
+	}
 }
